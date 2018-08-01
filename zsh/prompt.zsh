@@ -55,6 +55,21 @@ git_arrows() {
     echo $arrows
 }
 
+node_version() {
+    local version
+
+    if [[ -f package.json || -d node_modules || -n *.js(#qN^/) ]]; then
+        echo ""
+    elif command_exists nvm; then
+        version=$(nvm current 2>/dev/null) || [ $version == "system" || $version == "node" ] && return
+        echo "%F{115}\ue718%F %F{241}$version%F "
+    elif command_exists node; then
+        version=$(node -v 2>/dev/null)
+        echo "%F{115}\ue718%F %F{241}$version%F "
+    else
+        echo ""
+    fi
+}
 
 # indicate a job (for example, vim) has been backgrounded
 # If there is a job in the background, display a ✱
@@ -73,7 +88,8 @@ precmd() {
     print -P '\n%F{6}%~'
 }
 
-PROMPT_SYMBOL='❯'
+# PROMPT_SYMBOL='❯'
+PROMPT_SYMBOL='➜'
 
 export PROMPT='%(?.%F{207}.%F{160})$PROMPT_SYMBOL%f '
 export RPROMPT='`git_dirty`%F{241}$vcs_info_msg_0_%f`git_arrows``suspended_jobs`'
