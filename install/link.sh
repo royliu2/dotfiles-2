@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-DOTFILES=$HOME/code/dotfiles
+DOTFILES=$HOME/code/dotfiles-2
 
 echo -e "\\nCreating symlinks"
 echo "=============================="
@@ -12,7 +12,7 @@ for file in $linkables ; do
     else
         echo "Creating symlink for $file"
         ln -s "$file" "$target"
-    fi
+	fi
 done
 
 echo -e "\\n\\ninstalling to ~/.config"

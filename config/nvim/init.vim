@@ -396,7 +396,7 @@ call plug#begin('~/.config/nvim/plugged')
     Plug 'tpope/vim-sleuth'
 
     " a simple tool for presenting slides in vim based on text files
-    Plug 'sotte/presenting.vim', { 'for': 'markdown' }
+    " Plug 'sotte/presenting.vim', { 'for': 'markdown' }
 
     " Fancy startup screen for vim {{{
     Plug 'mhinz/vim-startify'
@@ -671,7 +671,8 @@ call plug#begin('~/.config/nvim/plugged')
         " Plug 'pangloss/vim-javascript', { 'for': ['javascript', 'javascript.jsx', 'html'] }
         Plug 'moll/vim-node', { 'for': 'javascript' }
         Plug 'mxw/vim-jsx', { 'for': ['javascript.jsx', 'javascript'] }
-        Plug 'ternjs/tern_for_vim', { 'for': ['javascript', 'javascript.jsx'], 'do': 'npm install' }
+        " Plug 'ternjs/tern_for_vim', { 'for': ['javascript', 'javascript.jsx'], 'do': 'npm install' }
+	Plug 'elzr/vim-json', { 'for': 'json' }
     " }}}
 
     " TypeScript {{{
@@ -696,6 +697,7 @@ call plug#begin('~/.config/nvim/plugged')
         Plug 'cakebaker/scss-syntax.vim', { 'for': 'scss' }
         Plug 'gko/vim-coloresque'
         Plug 'stephenway/postcss.vim', { 'for': 'css' }
+	Plug 'styled-components/vim-styled-components', { 'branch': 'main' }
     " }}}
 
     " markdown {{{
