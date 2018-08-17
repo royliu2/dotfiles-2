@@ -10,6 +10,7 @@ fi
 
 # use nvim, but don't make me think about it
 alias vim="nvim"
+alias vi="nvim"
 
 # Filesystem aliases
 alias ..='cd ..'

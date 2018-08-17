@@ -53,7 +53,7 @@ call plug#begin('~/.config/nvim/plugged')
 " }}}
 
 " Appearance {{{
-    set number " show line numbers
+    set number relativenumber " show hybrid line numbers
     set wrap " turn on line wrapping
     set wrapmargin=8 " wrap lines when coming within n characters from side
     set linebreak " set soft wrapping
@@ -107,7 +107,7 @@ call plug#begin('~/.config/nvim/plugged')
     endif
 
     " enable 24 bit color support if supported
-    if (has('mac') && empty($TMUX) && has("termguicolors"))
+    if (has('mac') && has("termguicolors"))
         set termguicolors
     endif
 
@@ -671,6 +671,7 @@ call plug#begin('~/.config/nvim/plugged')
         " Plug 'pangloss/vim-javascript', { 'for': ['javascript', 'javascript.jsx', 'html'] }
         Plug 'moll/vim-node', { 'for': 'javascript' }
         Plug 'mxw/vim-jsx', { 'for': ['javascript.jsx', 'javascript'] }
+        let g:jsx_ext_required = 0
         " Plug 'ternjs/tern_for_vim', { 'for': ['javascript', 'javascript.jsx'], 'do': 'npm install' }
 	Plug 'elzr/vim-json', { 'for': 'json' }
     " }}}
