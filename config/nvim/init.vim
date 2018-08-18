@@ -77,11 +77,11 @@ call plug#begin('~/.config/nvim/plugged')
     set mat=2 " how many tenths of a second to blink
 
     " Tab control
-    set noexpandtab " insert tabs rather than spaces for <Tab>
+    set expandtab " insert tabs rather than spaces for <Tab>
     set smarttab " tab respects 'tabstop', 'shiftwidth', and 'softtabstop'
-    set tabstop=4 " the visible width of tabs
-    set softtabstop=4 " edit as if the tabs are 4 characters wide
-    set shiftwidth=4 " number of spaces to use for indent and unindent
+    set tabstop=2 " the visible width of tabs
+    set softtabstop=2 " edit as if the tabs are 4 characters wide
+    set shiftwidth=2 " number of spaces to use for indent and unindent
     set shiftround " round indent to a multiple of 'shiftwidth'
 
     " code folding settings
@@ -244,8 +244,14 @@ call plug#begin('~/.config/nvim/plugged')
     " set a map leader for more key combos
     let mapleader = ','
 
+    " remap semicolon to colon
+    map ; :
+
     " remap esc
     inoremap jk <esc>
+
+    " disable Ex mode
+    noremap Q <NOP>
 
     " shortcut to save
     nmap <leader>, :w<cr>
@@ -275,8 +281,13 @@ call plug#begin('~/.config/nvim/plugged')
     inoremap <expr> <C-k> pumvisible() ? "\<C-P>" : "\<C-k>"
 
     nmap <leader>l :set list!<cr>
+
+	" Buffer Navigation
     map <leader>p :bp<CR>
     map <leader>n :bn<CR>
+
+	" delete buffer
+nmap <silent> <leader>d :bp<cr>:bd #<cr>
 
     " Textmate style indentation
     vmap <leader>[ <gv
@@ -697,7 +708,8 @@ call plug#begin('~/.config/nvim/plugged')
 
     " JavaScript {{{
         Plug 'othree/yajs.vim', { 'for': [ 'javascript', 'javascript.jsx', 'html' ] }
-        Plug 'pangloss/vim-javascript', { 'for': ['javascript', 'javascript.jsx', 'html'] }
+        Plug 'othree/es.next.syntax.vim', { 'for': [ 'javascript', 'javascript.jsx' ] }
+        " Plug 'pangloss/vim-javascript', { 'for': ['javascript', 'javascript.jsx', 'html'] }
         Plug 'moll/vim-node', { 'for': 'javascript' }
         Plug 'mxw/vim-jsx', { 'for': ['javascript.jsx', 'javascript'] }
         let g:jsx_ext_required = 0
