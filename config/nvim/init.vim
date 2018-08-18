@@ -19,6 +19,7 @@ call plug#begin('~/.config/nvim/plugged')
 
     set history=1000 " change history to 1000
     set textwidth=120
+	set showtabline=2
 
     set backupdir=~/.vim-tmp,~/.tmp,~/tmp,/var/tmp,/tmp
     set directory=~/.vim-tmp,~/.tmp,~/tmp,/var/tmp,/tmp
@@ -121,6 +122,8 @@ call plug#begin('~/.config/nvim/plugged')
     " LightLine {{{
         Plug 'itchyny/lightline.vim'
         Plug 'nicknisi/vim-base16-lightline'
+        " Plug 'mgee/lightline-bufferline'
+        Plug 'bling/vim-bufferline'
         " Plug 'felixjung/vim-base16-lightline'
         let g:lightline = {
         \   'colorscheme': 'base16',
@@ -133,15 +136,17 @@ call plug#begin('~/.config/nvim/plugged')
         \               [ 'linter_errors', 'linter_warnings' ]]
         \   },
         \   'component_expand': {
+        \       'bufferline': 'LightlineBufferline',
         \       'linter': 'LightlineLinter',
         \       'linter_warnings': 'LightlineLinterWarnings',
         \       'linter_errors': 'LightlineLinterErrors',
-        \       'linter_ok': 'LightlineLinterOk'
+        \       'linter_ok': 'LightlineLinterOk',
         \   },
         \   'component_type': {
         \       'readonly': 'error',
         \       'linter_warnings': 'warning',
-        \       'linter_errors': 'error'
+        \       'linter_errors': 'error',
+        \       'bufferline': 'tabsel',
         \   },
         \   'component_function': {
         \       'fileencoding': 'LightlineFileEncoding',
@@ -151,7 +156,7 @@ call plug#begin('~/.config/nvim/plugged')
         \       'gitbranch': 'LightlineGitBranch'
         \   },
         \   'tabline': {
-        \       'left': [ [ 'tabs' ] ],
+        \       'left': [ [ 'bufferline' ] ],
         \       'right': [ [ 'close' ] ]
         \   },
         \   'tab': {
@@ -163,6 +168,12 @@ call plug#begin('~/.config/nvim/plugged')
         \ }
         " \   'separator': { 'left': '▓▒░', 'right': '░▒▓' },
         " \   'subseparator': { 'left': '▒', 'right': '░' }
+        "
+
+        function! LightlineBufferline()
+            call bufferline#refresh_status()
+            return [ g:bufferline_status_info.before, g:bufferline_status_info.current, g:bufferline_status_info.after]
+        endfunction
 
         function! LightlineFileName() abort
             let filename = winwidth(0) > 70 ? expand('%') : expand('%:t')
@@ -264,6 +275,8 @@ call plug#begin('~/.config/nvim/plugged')
     inoremap <expr> <C-k> pumvisible() ? "\<C-P>" : "\<C-k>"
 
     nmap <leader>l :set list!<cr>
+    map <leader>p :bp<CR>
+    map <leader>n :bn<CR>
 
     " Textmate style indentation
     vmap <leader>[ <gv
@@ -325,6 +338,9 @@ call plug#begin('~/.config/nvim/plugged')
     command! RM call functions#Delete() <Bar> q!
 " }}}
 
+  " Trying to fix orphan netrw buffers
+  autocmd FileType netrw setl bufhidden=wipe
+
 " AutoGroups {{{
     " file type specific settings
     augroup configgroup
@@ -336,6 +352,10 @@ call plug#begin('~/.config/nvim/plugged')
         autocmd BufWritePost .vimrc.local source %
         " save all files on focus lost, ignoring warnings about untitled buffers
         autocmd FocusLost * silent! wa
+
+        " Open NERDTree when no file is specified
+        " autocmd StdinReadPre * let s:std_in=1
+        " autocmd VimEnter * if (argc() == 0 && !exists("s:std_in")) | NERDTreeToggle | endif
 
         " make quickfix windows take all the lower section of the screen
         " when there are multiple windows open
@@ -381,7 +401,7 @@ call plug#begin('~/.config/nvim/plugged')
     Plug 'tpope/vim-dispatch'
 
     " netrw helper
-    Plug 'tpope/vim-vinegar'
+    " Plug 'tpope/vim-vinegar'
 
     " single/multi line code handler: gS - split one line into multiple, gJ - combine multiple lines into one
     Plug 'AndrewRadev/splitjoin.vim'
@@ -496,6 +516,13 @@ call plug#begin('~/.config/nvim/plugged')
             autocmd!
             autocmd FileType nerdtree setlocal nolist " turn off whitespace characters
             autocmd FileType nerdtree setlocal nocursorline " turn off line highlighting for performance
+
+            " open nerdtree when opening a directory with vim
+            " autocmd StdinReadPre * let s:std_in=2
+            " autocmd VimEnter * if (argc() == 1 && isdirectory(argv()[0]) && !exists("s:std_in")) | exe 'NERDTreeToggle' argv()[0] | wincmd p | ene | endif
+
+            " close vim if nerdtree is only window left
+            autocmd bufenter * if (winnr("$") == 1 && exists("b:NERDTree") && b:NERDTree.isTabTree()) | q | endif
         augroup END
 
         " Toggle NERDTree
@@ -512,6 +539,7 @@ call plug#begin('~/.config/nvim/plugged')
         nmap <silent> <leader>y :NERDTreeFind<cr>
 
         let NERDTreeShowHidden=1
+        let NERDTreeQuitOnOpen=1
         " let NERDTreeDirArrowExpandable = '▷'
         " let NERDTreeDirArrowCollapsible = '▼'
         let g:NERDTreeIndicatorMapCustom = {
@@ -526,6 +554,7 @@ call plug#begin('~/.config/nvim/plugged')
         \ 'Ignored'   : '☒',
         \ "Unknown"   : "?"
         \ }
+
     " }}}
 
     " FZF {{{
@@ -668,7 +697,7 @@ call plug#begin('~/.config/nvim/plugged')
 
     " JavaScript {{{
         Plug 'othree/yajs.vim', { 'for': [ 'javascript', 'javascript.jsx', 'html' ] }
-        " Plug 'pangloss/vim-javascript', { 'for': ['javascript', 'javascript.jsx', 'html'] }
+        Plug 'pangloss/vim-javascript', { 'for': ['javascript', 'javascript.jsx', 'html'] }
         Plug 'moll/vim-node', { 'for': 'javascript' }
         Plug 'mxw/vim-jsx', { 'for': ['javascript.jsx', 'javascript'] }
         let g:jsx_ext_required = 0
