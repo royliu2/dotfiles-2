@@ -177,3 +177,9 @@
 [rebase]
     instructionFormat = "[%an - %ar] %s"
     autoStash = true
+[user]
+	  name = Roy Liu
+	  email = royliu2@gmail.com
+	  signingkey = /Users/roy/.ssh/id_ed25519.pub
+[gpg]
+	  format = ssh

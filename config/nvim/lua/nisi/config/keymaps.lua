@@ -63,8 +63,8 @@ nmap([[\t]], ":set ts=4 sts=4 sw=4 noet<cr>", { desc = "Set tabs" })
 nmap([[\s]], ":set ts=4 sts=4 sw=4 et<cr>", { desc = "Set spaces" })
 
 -- indent outdent while in visual mode
-vmap("<", "<gv")
-vmap(">", ">gv")
+vmap("<leader>[", "<gv")
+vmap("<leader>]", ">gv")
 
 vmap(".", ":normal .<cr>") -- run `.` command in visual mode
 
@@ -134,3 +134,8 @@ vmap("<leader>y", utils.copy_normalized_block, { desc = "Copy and normalized" })
 
 -- open current buffer in a new tab
 nmap("gTT", ":tab sb<cr>", { desc = "Open current buffer in a new tab" })
+
+-- buffer navigation
+nnoremap("<leader>p", "<Cmd>BufferPrevious<CR>")
+nnoremap("<leader>n", "<Cmd>BufferNext<CR>")
+nnoremap("<leader>fu", "<Cmd>BufferPick<CR>")

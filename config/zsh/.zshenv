@@ -31,3 +31,5 @@ typeset -aU path
 
 export EDITOR='nvim'
 export GIT_EDITOR='nvim'
+export PATH="$PATH:/Users/roy/.foundry/bin"
+export PATH="$PATH:/Users/roy/.foundry/bin"

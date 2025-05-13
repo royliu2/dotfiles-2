@@ -29,26 +29,26 @@ config.window_padding = {
 }
 
 -- font config
-config.font = wezterm.font("Monaspace Neon", { weight = "Regular" })
+config.font = wezterm.font("Fira Code", { weight = "Regular" })
 config.font_rules = {
   {
     intensity = "Normal",
     italic = true,
-    font = wezterm.font("Monaspace Radon", { weight = "Regular" }),
+    font = wezterm.font("Fira Code", { weight = "Regular" }),
   },
   {
     intensity = "Bold",
     italic = false,
-    font = wezterm.font("Monaspace Neon", { weight = "ExtraBold" }),
+    font = wezterm.font("Fira Code", { weight = "Bold" }),
   },
   {
     intensity = "Bold",
     italic = true,
-    font = wezterm.font("Monaspace Radon", { weight = "ExtraBold" }),
+    font = wezterm.font("Fira Code", { weight = "Bold" }),
   },
 }
 config.harfbuzz_features = { "calt", "dlig", "clig=1", "ss01", "ss02", "ss03", "ss04", "ss05", "ss06", "ss07", "ss08" }
-config.font_size = 16
+config.font_size = 12
 config.line_height = 1.1
 config.adjust_window_size_when_changing_font_size = false
 
@@ -68,10 +68,10 @@ if h.is_dark then
 
   -- and use the custom color scheme
   -- config.color_scheme = "Catppuccin Macchiato"
-  config.color_scheme = "Catppuccin Macchiato"
-  config.set_environment_variables = {
-    THEME_FLAVOUR = "macchiato",
-  }
+  config.color_scheme = "Moonfly (Gogh)"
+  -- config.set_environment_variables = {
+  -- THEME_FLAVOUR = "macchiato",
+  -- }
   if fancy then
     config.background = {
       b.get_background(),
@@ -79,11 +79,11 @@ if h.is_dark then
     }
   end
 else
-  config.color_scheme = "Catppuccin Latte"
+  config.color_scheme = "Moonfly (Gogh)"
   config.window_background_opacity = 1
-  config.set_environment_variables = {
-    THEME_FLAVOUR = "latte",
-  }
+  -- config.set_environment_variables = {
+  -- THEME_FLAVOUR = "latte",
+  -- }
   config.background = {
     b.get_background(),
   }

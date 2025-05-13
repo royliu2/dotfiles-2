@@ -18,7 +18,7 @@ local utils = require("nisi.utils")
 ---@field transparent boolean|nil Whether to use a transparent background for the colorscheme
 local config = {
   lazypath = vim.fn.stdpath("data") .. "lazy/lazy.nvim",
-  startup_art = "nicknisi",
+  startup_art = "skull",
   startup_color = "#653CAD",
   zen = false,
   copilot = true,
@@ -33,7 +33,7 @@ local config = {
       vim.o.background = "light"
     end
 
-    vim.cmd("colorscheme catppuccin")
+    vim.cmd("colorscheme moonfly")
   end,
   transparent = false,
 }
@@ -174,6 +174,13 @@ function M.setup(user_config)
   apply_colorscheme(config.colorscheme)
   vim.cmd.syntax("on")
   vim.cmd("filetype plugin indent on")
+
+  -- transparent background
+  vim.cmd([[highlight Normal guibg=NONE ctermbg=NONE]])
+  vim.cmd([[highlight NonText guibg=NONE ctermbg=NONE]])
+  vim.cmd([[highlight LineNr guibg=NONE ctermbg=NONE]])
+  vim.cmd([[highlight SignColumn guibg=NONE ctermbg=NONE]])
+
   patch_syntax()
 end
 
