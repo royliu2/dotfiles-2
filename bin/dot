@@ -46,6 +46,9 @@ $(fmt_key "Available Commands:")
     link                          Link dotfiles packages to their respective locations
         all                       Link all
         <pkg>                     Link a specific package
+        clean                     Clean up broken symlinks
+            -n, --dry-run         Show what would be removed without actually removing
+            -v, --verbose         Show detailed output
         -v, --verbose             Show detailed output
     unlink                        Unlink dotfiles packages
         all                       Unlink all
@@ -82,6 +85,18 @@ cmd_clean() {
       log_info "Link to $path_link not found or is not broken. Skipping..."
     fi
   done
+
+  # Clean up broken symlinks from home directory
+  if [ -d "$DOTFILES/home" ]; then
+    while IFS= read -r -d '' file; do
+      relative_path="${file#"$DOTFILES"/home/}"
+      target_path="$HOME/$relative_path"
+      if [ -L "$target_path" ] && [ ! -e "$target_path" ]; then
+        log_success "Removing broken symbolic link: $target_path"
+        rm "$target_path"
+      fi
+    done < <(find "$DOTFILES/home" -type f -print0)
+  fi
 
   echo -e
   log_success "Done."
@@ -123,7 +138,6 @@ cmd_backup() {
 
   files_to_backup=(
     ".zshrc"
-    ".zshenv"
     ".zprofile"
     ".zsh_aliases"
     ".zsh_functions"
@@ -140,6 +154,14 @@ cmd_backup() {
     ".config/wezterm"
     ".config/zsh"
   )
+
+  # Add home directory files to backup
+  if [ -d "$DOTFILES/home" ]; then
+    while IFS= read -r -d '' file; do
+      relative_path="${file#"$DOTFILES"/home/}"
+      files_to_backup+=("$relative_path")
+    done < <(find "$DOTFILES/home" -type f -print0)
+  fi
 
   tmpfile=$(mktemp)
   trap 'rm -f "$tmpfile"' EXIT
@@ -176,10 +198,139 @@ cmd_backup() {
   fi
 }
 
+link_home_files() {
+  local operation="$1"
+  local verbose="$2"
+
+  if [ ! -d "$DOTFILES/home" ]; then
+    return 0
+  fi
+
+  while IFS= read -r -d '' file; do
+    local relative_path="${file#"$DOTFILES"/home/}"
+    local target_path="$HOME/$relative_path"
+    local target_dir="$(dirname "$target_path")"
+
+    if [ "$operation" = "link" ]; then
+      # Create parent directories if needed
+      if [ ! -d "$target_dir" ]; then
+        [ "$verbose" = true ] && log_info "Creating directory: $target_dir"
+        mkdir -p "$target_dir"
+      fi
+
+      if [ -e "$target_path" ]; then
+        log_warning "~${target_path#"$HOME"} already exists... Skipping."
+      else
+        [ "$verbose" = true ] && log_info "Linking $relative_path"
+        ln -s "$file" "$target_path"
+      fi
+    else # unlink
+      if [ -L "$target_path" ]; then
+        [ "$verbose" = true ] && log_info "Unlinking $target_path"
+        rm "$target_path"
+      elif [ -e "$target_path" ]; then
+        log_warning "Skipping \"$target_path\" because it is not a symlink"
+      fi
+    fi
+  done < <(find "$DOTFILES/home" -type f -print0)
+}
+
+cmd_link_clean() {
+  local verbose=false
+  local dry_run=false
+
+  while [[ $# -gt 0 ]]; do
+    case "$1" in
+    -v | --verbose)
+      verbose=true
+      shift
+      ;;
+    -n | --dry-run)
+      dry_run=true
+      shift
+      ;;
+    *)
+      log_error "Unknown argument: $1"
+      exit 1
+      ;;
+    esac
+  done
+
+  fmt_title_underline "Cleaning up broken symlinks"
+
+  local broken_count=0
+
+  # Check config directory symlinks
+  if [ -d "$CONFIG_HOME" ]; then
+    while IFS= read -r -d '' link; do
+      if [ -L "$link" ] && [ ! -e "$link" ]; then
+        broken_count=$((broken_count + 1))
+        if [ "$dry_run" = true ]; then
+          log_warning "[DRY RUN] Would remove broken symlink: ~${link#"$HOME"}"
+        else
+          [ "$verbose" = true ] && log_info "Removing broken symlink: ~${link#"$HOME"}"
+          rm "$link"
+        fi
+      fi
+    done < <(find "$CONFIG_HOME" -type l -print0 2>/dev/null || true)
+  fi
+
+  # Check home directory symlinks created from $DOTFILES/home
+  if [ -d "$DOTFILES/home" ]; then
+    # Get all directories that contain files in $DOTFILES/home
+    local home_dirs=()
+    while IFS= read -r -d '' file; do
+      local dir_path="$HOME/$(dirname "${file#"$DOTFILES"/home/}")"
+      # Add to array if not already present
+      if [[ ! " ${home_dirs[@]} " =~ " ${dir_path} " ]]; then
+        home_dirs+=("$dir_path")
+      fi
+    done < <(find "$DOTFILES/home" -type f -print0)
+
+    # Now check for broken symlinks only in those directories
+    for dir in "${home_dirs[@]}"; do
+      if [ -d "$dir" ]; then
+        while IFS= read -r -d '' link; do
+          if [ -L "$link" ] && [ ! -e "$link" ]; then
+            # Check if this broken symlink points to our dotfiles directory
+            local link_target=$(readlink "$link")
+            if [[ "$link_target" == "$DOTFILES"* ]]; then
+              broken_count=$((broken_count + 1))
+              if [ "$dry_run" = true ]; then
+                log_warning "[DRY RUN] Would remove broken symlink: ~${link#"$HOME"}"
+              else
+                [ "$verbose" = true ] && log_info "Removing broken symlink: ~${link#"$HOME"}"
+                rm "$link"
+              fi
+            fi
+          fi
+        done < <(find "$dir" -maxdepth 1 -type l -print0 2>/dev/null || true)
+      fi
+    done
+  fi
+
+  echo
+  if [ "$broken_count" -eq 0 ]; then
+    log_success "No broken symlinks found"
+  else
+    if [ "$dry_run" = true ]; then
+      log_info "Found $broken_count broken symlink(s). Run without --dry-run to remove them."
+    else
+      log_success "Removed $broken_count broken symlink(s)"
+    fi
+  fi
+}
+
 cmd_link() {
   local operation="$1"
   local pkg="$2"
   shift 2 || true
+
+  # Handle 'dot link clean' syntax
+  if [ "$operation" = "link" ] && [ "$pkg" = "clean" ]; then
+    cmd_link_clean "$@"
+    return
+  fi
 
   local verbose=false
 
@@ -227,20 +378,8 @@ cmd_link() {
       fi
     done
 
-    # Handle .zshenv special case
-    if [ "$operation" = "link" ]; then
-      if [ ! -e "$HOME/.zshenv" ]; then
-        [ "$verbose" = true ] && log_info "Linking .zshenv"
-        ln -s "$DOTFILES/config/zsh/.zshenv" "$HOME/.zshenv"
-      else
-        [ "$verbose" = true ] && log_info "~/.zshenv already exists... Skipping."
-      fi
-    else # unlink
-      if [ -L "$HOME/.zshenv" ]; then
-        [ "$verbose" = true ] && log_info "Unlinking $HOME/.zshenv"
-        rm "$HOME/.zshenv"
-      fi
-    fi
+    # Handle home directory files
+    link_home_files "$operation" "$verbose"
   else
     # Handle specific package
     local target="$CONFIG_HOME/$pkg"

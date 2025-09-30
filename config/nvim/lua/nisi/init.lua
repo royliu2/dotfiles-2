@@ -10,19 +10,18 @@ local utils = require("nisi.utils")
 ---@field zen boolean|nil Whether to show a minimal UI (hide statusline, line numbers, etc.)
 ---@field copilot boolean|nil Whether copilot is enabled
 ---@field python boolean|nil Whether python is enabled
----@field avante boolean|nil Whether avante is enabled
 ---@field fzf boolean|nil Whether too configure fzf for tooling like telescope
 ---@field prefer_git boolean|nil Whether to prefer using git for dependencies over other options like curl
 ---@field proxy string|nil A proxy URL to use for certain network functions
 ---@field colorscheme string|fun()|nil What to set the colorscheme to and/or how
 ---@field transparent boolean|nil Whether to use a transparent background for the colorscheme
+---@field snippets_dir string|nil The directory to load snippets from
 local config = {
   lazypath = vim.fn.stdpath("data") .. "lazy/lazy.nvim",
   startup_art = "skull",
   startup_color = "#653CAD",
   zen = false,
   copilot = true,
-  avante = true,
   fzf = true,
   proxy = nil,
   prefer_git = false,
@@ -34,6 +33,7 @@ local config = {
     end
 
     vim.cmd("colorscheme cyberdream")
+    --- vim.cmd("colorscheme tokyonight")
   end,
   transparent = false,
 }
@@ -97,10 +97,6 @@ local function init_plugins()
     M.add_plugin({ import = "nisi.plugins.extras.python" })
   end
 
-  if config.avante then
-    M.add_plugin({ import = "nisi.plugins.extras.avante" })
-  end
-
   if config.fzf then
     M.add_plugin({ import = "nisi.plugins.extras.fzf" })
   end
@@ -112,24 +108,19 @@ end
 ---Apply syntax and LSP customizations
 local function patch_syntax()
   -- set up custom symbols for LSP errors
-  local signs = {
-    Error = icons.error,
-    Warning = icons.warning,
-    Warn = icons.warning,
-    Hint = icons.hint,
-    Info = icons.hint,
-  }
-  for type, icon in pairs(signs) do
-    local hl = "DiagnosticSign" .. type
-    vim.fn.sign_define(hl, { text = icon, texthl = hl, numhl = hl })
-  end
-
   vim.diagnostic.config({
     virtual_text = true,
     virtual_lines = {
       current_line = true,
     },
-    signs = true,
+    signs = {
+      text = {
+        [vim.diagnostic.severity.ERROR] = icons.error,
+        [vim.diagnostic.severity.WARN] = icons.warning,
+        [vim.diagnostic.severity.HINT] = icons.hint,
+        [vim.diagnostic.severity.INFO] = icons.hint,
+      },
+    },
     update_in_insert = true,
     severity_sort = true,
   })
