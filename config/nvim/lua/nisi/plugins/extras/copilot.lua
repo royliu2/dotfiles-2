@@ -14,7 +14,7 @@ return {
           close = "<Esc>",
           next = "<C-J>",
           prev = "<C-K>",
-          select = "<CR>",
+          select = "<C-R>",
           dismiss = "<C-X>",
         },
       },

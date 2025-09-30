@@ -2,6 +2,32 @@ local utils = require("nisi.utils")
 local config = require("nisi").config
 
 return {
+  -- Cyberdream theme
+  {
+    "scottmckendry/cyberdream.nvim",
+    name = "cyberdream",
+    lazy = false,
+    priority = 1000,
+    opts = {
+      transparent = true,
+      italic_comments = true,
+      term_colors = true,
+      styles = {
+        comments = { italic = true },
+        conditionals = { italic = true },
+        loops = { italic = true },
+        functions = {},
+        keywords = {},
+        strings = {},
+        variables = {},
+        numbers = {},
+        booleans = {},
+        properties = {},
+        types = {},
+        operators = {},
+      },
+    },
+  },
   -- Catppuccin theme
   {
     "catppuccin/nvim",
@@ -12,7 +38,7 @@ return {
       -- dim_inactive = { enabled = config.transparent or false, shade = "dark", percentage = 0.6 },
       transparent_background = config.transparent or false, -- set to true to enable transparent background
       term_colors = true,
-      compile = { enabled = true, path = vim.fn.stdpath("cache") .. "/catppuccin", suffix = "_compiled" },
+      compile = { enabled = false, path = vim.fn.stdpath("cache") .. "/catppuccin", suffix = "_compiled" },
       styles = {
         comments = { "italic" },
         conditionals = { "italic" },

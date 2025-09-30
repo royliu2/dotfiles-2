@@ -33,7 +33,7 @@ local config = {
       vim.o.background = "light"
     end
 
-    vim.cmd("colorscheme moonfly")
+    vim.cmd("colorscheme cyberdream")
   end,
   transparent = false,
 }

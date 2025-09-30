@@ -3,7 +3,7 @@ local wezterm = require("wezterm")
 local M = {}
 
 M.get_default_theme = function()
-  return h.is_dark and "Moonfly (Gogh)"
+  return h.is_dark and "cyberdream"
 end
 
 M.get_background = function(dark, light)

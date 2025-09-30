@@ -68,7 +68,7 @@ if h.is_dark then
 
   -- and use the custom color scheme
   -- config.color_scheme = "Catppuccin Macchiato"
-  config.color_scheme = "Moonfly (Gogh)"
+  config.color_scheme = "cyberdream"
   -- config.set_environment_variables = {
   -- THEME_FLAVOUR = "macchiato",
   -- }
@@ -79,7 +79,7 @@ if h.is_dark then
     }
   end
 else
-  config.color_scheme = "Moonfly (Gogh)"
+  config.color_scheme = "cyberdream"
   config.window_background_opacity = 1
   -- config.set_environment_variables = {
   -- THEME_FLAVOUR = "latte",
