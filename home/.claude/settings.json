@@ -77,10 +77,9 @@
       }
     ]
   },
-  "model": "opus",
   "statusLine": {
     "type": "command",
     "command": "claude-statusline"
-  }
+  },
+  "alwaysThinkingEnabled": true
 }
-

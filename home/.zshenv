@@ -35,3 +35,5 @@ export PATH="$PATH:/Users/roy/.foundry/bin"
 export PATH="$PATH:/Users/roy/.foundry/bin"
 
 export PATH="$PATH:/Users/roy/.config/.foundry/bin"
+
+[[ -f "$HOME/.localrc" ]] && source $HOME/.localrc
