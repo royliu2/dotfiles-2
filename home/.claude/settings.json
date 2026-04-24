@@ -32,7 +32,8 @@
       "mcp__puppeteer__puppeteer_screenshot",
       "mcp__workos__workos_docs",
       "mcp__workos__workos_search",
-      "mcp__gpt5-server__gpt5_generate"
+      "mcp__gpt5-server__gpt5_generate",
+      "mcp__pencil"
     ]
   },
   "hooks": {
@@ -41,7 +42,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "/Users/nicknisi/Developer/dotfiles/bin/claude-status-hook PreToolUse"
+            "command": "/Users/roy/code/dotfiles-2/bin/claude-status-hook PreToolUse"
           }
         ]
       }
@@ -51,7 +52,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "/Users/nicknisi/Developer/dotfiles/bin/claude-status-hook Stop"
+            "command": "/Users/roy/code/dotfiles-2/bin/claude-status-hook Stop"
           }
         ]
       }
@@ -61,7 +62,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "/Users/nicknisi/Developer/dotfiles/bin/claude-status-hook SubagentStop"
+            "command": "/Users/roy/code/dotfiles-2/bin/claude-status-hook SubagentStop"
           }
         ]
       }
@@ -71,7 +72,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "/Users/nicknisi/Developer/dotfiles/bin/claude-status-hook Notification"
+            "command": "/Users/roy/code/dotfiles-2/bin/claude-status-hook Notification"
           }
         ]
       }
@@ -82,4 +83,5 @@
     "command": "claude-statusline"
   },
   "alwaysThinkingEnabled": true
+  "skipDangerousModePermissionPrompt": true
 }

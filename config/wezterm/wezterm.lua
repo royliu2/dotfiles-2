@@ -75,7 +75,7 @@ if h.is_dark then
   if fancy then
     config.background = {
       b.get_background(),
-      b.get_animation(assets .. "/blob_blue.gif"),
+      b.get_animation(assets .. "/blob.gif"),
     }
   end
 else
