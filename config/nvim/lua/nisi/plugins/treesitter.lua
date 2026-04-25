@@ -3,19 +3,51 @@ return {
   {
     "nvim-treesitter/nvim-treesitter",
     build = ":TSUpdate",
+    commit = "42fc28ba918343ebfd5565147a42a26580579482",
     version = false,
     event = { "BufReadPost", "BufNewFile" },
     dependencies = {
-      "nvim-treesitter/playground",
-      "nvim-treesitter/nvim-treesitter-textobjects",
-      "JoosepAlviste/nvim-ts-context-commentstring",
+      { "nvim-treesitter/playground", commit = "ba48c6a62a280eefb7c85725b0915e021a1a0749" },
+      { "nvim-treesitter/nvim-treesitter-textobjects", commit = "71385f191ec06ffc60e80e6b0c9a9d5daed4824c" },
+      {
+        "JoosepAlviste/nvim-ts-context-commentstring",
+        commit = "1b212c2eee76d787bbea6aa5e92a2b534e7b4f8f",
+        init = function()
+          vim.g.loaded_ts_context_commentstring = 1
+        end,
+        config = function()
+          require("ts_context_commentstring").setup({
+            enable_autocmd = true,
+          })
+
+          vim.api.nvim_create_autocmd("FileType", {
+            group = vim.api.nvim_create_augroup("user_ts_context_commentstring", { clear = true }),
+            pattern = {
+              "astro",
+              "blade",
+              "css",
+              "html",
+              "javascript",
+              "javascriptreact",
+              "php",
+              "svelte",
+              "typescript",
+              "typescriptreact",
+              "vue",
+            },
+            callback = function(args)
+              require("ts_context_commentstring.internal").setup_buffer(args.buf)
+            end,
+          })
+        end,
+      },
     },
     init = function(plugin)
       if config.prefer_git then
         require("nvim-treesitter.install").prefer_git = true
       end
       require("lazy.core.loader").add_to_rtp(plugin)
-      require("nvim-treesitter.query_predicates")
+      pcall(require, "nvim-treesitter.query_predicates")
       local parser_config = require("nvim-treesitter.parsers").get_parser_configs()
       parser_config.blade = {
         install_info = {

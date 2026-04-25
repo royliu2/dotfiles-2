@@ -17,7 +17,7 @@ local utils = require("nisi.utils")
 ---@field transparent boolean|nil Whether to use a transparent background for the colorscheme
 ---@field snippets_dir string|nil The directory to load snippets from
 local config = {
-  lazypath = vim.fn.stdpath("data") .. "lazy/lazy.nvim",
+  lazypath = vim.fn.stdpath("data") .. "/lazy/lazy.nvim",
   startup_art = "skull",
   startup_color = "#653CAD",
   zen = false,
